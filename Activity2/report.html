@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Report Card</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            color: #1e293b;
+            padding: 30px 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            margin: auto;
+        }
+
+        /* Main Heading */
+        .main-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-heading h1 {
+            font-size: 36px;
+            color: #172554;
+            letter-spacing: 1px;
+        }
+
+        .main-heading p {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        /* Input Boxes */
+        .box {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .box-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #172554;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Subject Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: #172554;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        td input:focus {
+            border-color: #6366f1;
+        }
+
+        .fixed-mark {
+            font-weight: 700;
+            color: #475569;
+        }
+
+        /* Attendance */
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .fixed-input {
+            background: #f1f5f9 !important;
+            color: #475569;
+            font-weight: 700;
+            cursor: not-allowed;
+        }
+
+        /* Generate Button */
+        .generate-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .generate-btn {
+            border: none;
+            padding: 15px 45px;
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(79, 70, 229, 0.45);
+        }
+
+        .generate-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Report Card */
+        #reportSection {
+            display: none;
+            animation: appear 0.5s ease;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+            border: 1px solid #e2e8f0;
+        }
+
+        .report-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .report-header h2 {
+            font-size: 28px;
+            color: #172554;
+        }
+
+        .report-header p {
+            margin-top: 5px;
+            color: #64748b;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .info-card span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .info-card strong {
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .report-table {
+            min-width: 0;
+        }
+
+        .report-table th {
+            background: #312e81;
+        }
+
+        .report-table td {
+            font-size: 15px;
+        }
+
+        .status-pass {
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        .status-fail {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        /* Summary */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .summary-card {
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 18px 10px;
+        }
+
+        .summary-card .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #312e81;
+        }
+
+        .summary-card .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .attendance-result {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            background: #eef2ff;
+            text-align: center;
+        }
+
+        .attendance-result strong {
+            color: #312e81;
+        }
+
+        .overall-result {
+            margin-top: 20px;
+            text-align: center;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .overall-pass {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .overall-fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 25px auto 0;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            background: #0f172a;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .print-btn:hover {
+            background: #1e293b;
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .main-heading h1 {
+                font-size: 28px;
+            }
+
+            .student-grid,
+            .attendance-grid,
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .box,
+            .report-card {
+                padding: 18px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .main-heading,
+            .input-area,
+            .generate-container,
+            .print-btn {
+                display: none !important;
+            }
+
+            #reportSection {
+                display: block !important;
+            }
+
+            .report-card {
+                box-shadow: none;
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Heading -->
+    <div class="main-heading">
+        <h1>Student Report Card</h1>
+        <p>Enter student details, marks and attendance</p>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+
+        <!-- Student Details -->
+        <div class="box">
+
+            <div class="box-title">
+                Student Details
+            </div>
+
+            <div class="student-grid">
+
+                <div class="field">
+                    <label for="studentName">Student Name</label>
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="regNo">Register Number</label>
+                    <input
+                        type="text"
+                        id="regNo"
+                        placeholder="Enter register number"
+                    >
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Subjects -->
+        <div class="box">
+
+            <div class="box-title">
+                Subject Marks
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Obtained Marks</th>
+                            <th>Maximum Marks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>Subject 1</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="marks"
+                                    min="35"
+                                    max="100"
+                                    placeholder="35 - 100"
+                                >
+                            </td>
+                            <td class="fixed-mark">100</td>
+                        </tr>
+
+                        <tr>
+                            <td>Subject 2</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="marks"
+                                    min="35"
+                                    max="100"
+                                    placeholder="35 - 100"
+                                >
+                            </td>
+                            <td class="fixed-mark">100</td>
+                        </tr>
+
+                        <tr>
+                            <td>Subject 3</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="marks"
+                                    min="35"
+                                    max="100"
+                                    placeholder="35 - 100"
+                                >
+                            </td>
+                            <td class="fixed-mark">100</td>
+                        </tr>
+
+                        <tr>
+                            <td>Subject 4</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="marks"
+                                    min="35"
+                                    max="100"
+                                    placeholder="35 - 100"
+                                >
+                            </td>
+                            <td class="fixed-mark">100</td>
+                        </tr>
+
+                        <tr>
+                            <td>Subject 5</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    class="marks"
+                                    min="35"
+                                    max="100"
+                                    placeholder="35 - 100"
+                                >
+                            </td>
+                            <td class="fixed-mark">100</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <!-- Attendance -->
+        <div class="box">
+
+            <div class="box-title">
+                Attendance
+            </div>
+
+            <div class="attendance-grid">
+
+                <div class="field">
+                    <label for="attended">
+                        Classes Attended
+                    </label>
+
+                    <input
+                        type="number"
+                        id="attended"
+                        min="0"
+                        max="125"
+                        placeholder="Enter attended classes"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="conducted">
+                        Classes Conducted
+                    </label>
+
+                    <input
+                        type="number"
+                        id="conducted"
+                        class="fixed-input"
+                        value="125"
+                        readonly
+                    >
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Generate -->
+        <div class="generate-container">
+
+            <button
+                class="generate-btn"
+                onclick="generateReport()"
+            >
+                ✨ Generate Report Card
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Generated Report -->
+    <div id="reportSection">
+
+        <div class="report-card">
+
+            <div class="report-header">
+                <h2>Student Report Card</h2>
+                <p>Academic Performance Report</p>
+            </div>
+
+            <!-- Student Information -->
+            <div class="student-info">
+
+                <div class="info-card">
+                    <span>Student Name</span>
+                    <strong id="outputName">-</strong>
+                </div>
+
+                <div class="info-card">
+                    <span>Register Number</span>
+                    <strong id="outputReg">-</strong>
+                </div>
+
+            </div>
+
+            <!-- Marks Report -->
+            <div class="table-wrapper">
+
+                <table class="report-table">
+
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Obtained</th>
+                            <th>Maximum</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="reportBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Summary -->
+            <div class="summary">
+
+                <div class="summary-card">
+                    <div
+                        class="value"
+                        id="totalMarks"
+                    >
+                        0
+                    </div>
+
+                    <div class="label">
+                        Total Marks
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div
+                        class="value"
+                        id="percentage"
+                    >
+                        0%
+                    </div>
+
+                    <div class="label">
+                        Percentage
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div
+                        class="value"
+                        id="average"
+                    >
+                        0
+                    </div>
+
+                    <div class="label">
+                        Average
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div
+                        class="value"
+                        id="attendancePercentage"
+                    >
+                        0%
+                    </div>
+
+                    <div class="label">
+                        Attendance
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Attendance -->
+            <div class="attendance-result">
+
+                Classes Attended:
+                <strong id="outputAttended">0</strong>
+
+                /
+                <strong>125</strong>
+
+                &nbsp; | &nbsp;
+
+                Attendance:
+                <strong id="outputAttendance">0%</strong>
+
+            </div>
+
+            <!-- Overall Result -->
+            <div
+                id="overallResult"
+                class="overall-result"
+            >
+            </div>
+
+            <button
+                class="print-btn"
+                onclick="window.print()"
+            >
+                🖨 Print Report Card
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function generateReport() {
+
+    const studentName =
+        document.getElementById("studentName").value.trim();
+
+    const regNo =
+        document.getElementById("regNo").value.trim();
+
+    const marksInputs =
+        document.querySelectorAll(".marks");
+
+    const attended =
+        Number(document.getElementById("attended").value);
+
+    const conducted = 125;
+
+
+    /* Validate Student Details */
+
+    if (!studentName) {
+        alert("Please enter the student name.");
+        return;
+    }
+
+    if (!regNo) {
+        alert("Please enter the register number.");
+        return;
+    }
+
+
+    /* Validate Marks */
+
+    let marks = [];
+
+    for (let input of marksInputs) {
+
+        const value = Number(input.value);
+
+        if (
+            input.value === "" ||
+            value < 35 ||
+            value > 100
+        ) {
+
+            alert(
+                "Each subject mark must be between 35 and 100."
+            );
+
+            input.focus();
+
+            return;
+        }
+
+        marks.push(value);
+    }
+
+
+    /* Validate Attendance */
+
+    if (
+        document.getElementById("attended").value === "" ||
+        attended < 0 ||
+        attended > conducted
+    ) {
+
+        alert(
+            "Attended classes must be between 0 and 125."
+        );
+
+        return;
+    }
+
+
+    /* Calculate Marks */
+
+    let total = 0;
+
+    marks.forEach(mark => {
+        total += mark;
+    });
+
+    const maximumTotal =
+        marks.length * 100;
+
+    const percentage =
+        (total / maximumTotal) * 100;
+
+    const average =
+        total / marks.length;
+
+
+    /* Attendance */
+
+    const attendancePercentage =
+        (attended / conducted) * 100;
+
+
+    /* Student Details */
+
+    document.getElementById("outputName").textContent =
+        studentName;
+
+    document.getElementById("outputReg").textContent =
+        regNo;
+
+
+    /* Generate Subject Rows */
+
+    const reportBody =
+        document.getElementById("reportBody");
+
+    reportBody.innerHTML = "";
+
+
+    marks.forEach((mark, index) => {
+
+        const row =
+            document.createElement("tr");
+
+        const status =
+            mark >= 35
+                ? "PASS"
+                : "FAIL";
+
+        const statusClass =
+            mark >= 35
+                ? "status-pass"
+                : "status-fail";
+
+
+        row.innerHTML = `
+            <td>Subject ${index + 1}</td>
+
+            <td>${mark}</td>
+
+            <td>100</td>
+
+            <td class="${statusClass}">
+                ${status}
+            </td>
+        `;
+
+        reportBody.appendChild(row);
+
+    });
+
+
+    /* Summary */
+
+    document.getElementById("totalMarks")
+        .textContent =
+        `${total}/${maximumTotal}`;
+
+    document.getElementById("percentage")
+        .textContent =
+        `${percentage.toFixed(2)}%`;
+
+    document.getElementById("average")
+        .textContent =
+        average.toFixed(2);
+
+    document.getElementById("attendancePercentage")
+        .textContent =
+        `${attendancePercentage.toFixed(2)}%`;
+
+    document.getElementById("outputAttended")
+        .textContent =
+        attended;
+
+    document.getElementById("outputAttendance")
+        .textContent =
+        `${attendancePercentage.toFixed(2)}%`;
+
+
+    /* Overall Result */
+
+    const allPassed =
+        marks.every(mark => mark >= 35);
+
+    const overallResult =
+        document.getElementById("overallResult");
+
+
+    if (allPassed) {
+
+        overallResult.textContent =
+            "🎉 Overall Result: PASS";
+
+        overallResult.className =
+            "overall-result overall-pass";
+
+    } else {
+
+        overallResult.textContent =
+            "❌ Overall Result: FAIL";
+
+        overallResult.className =
+            "overall-result overall-fail";
+
+    }
+
+
+    /* Show Report */
+
+    document.getElementById("reportSection")
+        .style.display = "block";
+
+
+    /* Scroll to Report */
+
+    document.getElementById("reportSection")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+</script>
+
+</body>
+</html>
