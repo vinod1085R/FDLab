@@ -1,0 +1,34 @@
+<html>
+<body>
+<h1>Cartoon Gallery</h1>
+
+<button onclick="loadcartoons()">load Cartoons</button>
+
+<p id="message">Click the buttons to load the cartoons...</p>
+
+<div id="cartoons"></div>
+
+<script>
+
+function loadCartoons(){
+    let message=document.querySElector("#message");
+    let cartoons=document.querySElector("#cartoons");
+
+    message.textContent="Loading cartoons...";
+    cartoons.innerHTML="";
+
+    fetch("https://")
+
+    .then(response=>{
+        if (!response.ok)
+            throw new Error("Failed to load cartoon data");
+        return response.json();
+    })
+
+    .then(data=>{
+        data.movies.forEach(cartoon)
+    })
+}
+</script>
+</body>
+</html>
