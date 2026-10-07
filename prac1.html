@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cartoon Gallery - Fetch API</title>
+</head>
+
+<body>
+
+<h1>Cartoon Gallery</h1>
+
+<button onclick="loadCartoons()">Load Cartoons</button>
+<table id="cartoons"  border="1">
+    <tr>
+        <th>title</th>
+        <th>image</th>
+        <th>upload</th>
+    </tr>
+</table>
+<script>
+
+function loadCartoons() {
+
+    let message = document.querySelector("#message");
+    let cartoons = document.querySelector("#Cartoon");
+
+    fetch("https://raw.githubusercontent.com/samyak2403/daily-movies-api/main/movies/cartoons/cartoons.json")
+
+    .then(response =>  response.json())
+
+    .then(data => {
+
+        data.movies.forEach(movie => {
+
+            document.getElementById("cartoons").innerHTML += `
+                <tr>
+                    <td>${movie.title}</td>
+                    <td><img src="${movie.thumbnail}" width="100"></td>
+                    <td>"${movie.uploader}"</td>
+                </tr>
+            `;
+        });
+
+        message.textContent =
+            ` ${data.movies.length} cartoons loaded`;
+    })
+}
+
+</script>
+
+</body>
+</html>
