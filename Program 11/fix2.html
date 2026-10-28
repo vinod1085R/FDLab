@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Max Happy Restaurant</title>
+
+<style>
+:root {
+    --bg: #10120f;
+    --panel: #1b1e19;
+    --gold: #e9b44c;
+    --cream: #fff8e9;
+    --muted: #aaa99f;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #10120ff5;
+    border-bottom: 1px solid #34362e;
+}
+
+.nav {
+    max-width: 1200px;
+    margin: auto;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.logo {
+    color: var(--gold);
+    font: bold 27px Georgia, serif;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--cream);
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: var(--gold);
+}
+
+button.primary {
+    background: var(--gold);
+    color: #15130e;
+    border: none;
+    padding: 11px 17px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: radial-gradient(ellipse at center bottom, #e9b44c25, transparent 65%);
+}
+
+.hero small {
+    color: var(--gold);
+    letter-spacing: 4px;
+}
+
+.hero h1 {
+    font: normal clamp(40px, 7vw, 70px) Georgia, serif;
+    margin: 20px 0;
+    line-height: 1.15;
+}
+
+.hero h1 span {
+    color: var(--gold);
+    font-style: italic;
+}
+
+.hero p {
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto 25px;
+}
+
+section.content {
+    max-width: 1200px;
+    margin: auto;
+    padding: 55px 20px;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.heading h2 {
+    font: normal 40px Georgia, serif;
+    margin: 8px 0;
+}
+
+.heading p {
+    color: var(--muted);
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--panel);
+    color: var(--cream);
+    border: 1px solid #45463a;
+    border-radius: 6px;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+}
+
+select option {
+    background: var(--panel);
+}
+
+.count {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.food-card {
+    background: var(--panel);
+    border: 1px solid #34362e;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: 0.2s;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+}
+
+.food-card img {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    background: #292b24;
+}
+
+.food-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.food-city {
+    color: var(--gold);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.food-info h3 {
+    font: normal 21px Georgia, serif;
+    margin: 7px 0;
+}
+
+.description {
+    font-size: 12px;
+    color: var(--muted);
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.food-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid #34362e;
+    padding-top: 12px;
+}
+
+.price {
+    color: var(--gold);
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.add-button {
+    border: none;
+    background: var(--gold);
+    color: #15130e;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.box {
+    background: var(--panel);
+    border: 1px solid #34362e;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.box h3 {
+    font: normal 28px Georgia, serif;
+    margin-bottom: 15px;
+}
+
+.order-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #34362e;
+}
+
+.cart-item small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.quantity button {
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid #66604f;
+    border-radius: 4px;
+}
+
+.totals {
+    margin-top: 20px;
+    border-top: 1px solid #34362e;
+    padding-top: 15px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    color: var(--muted);
+}
+
+.total-row.grand {
+    color: var(--cream);
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.total-row.grand strong {
+    color: var(--gold);
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.field label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 5px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 75px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.secondary {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid #66604f;
+    border-radius: 5px;
+    padding: 10px 13px;
+}
+
+.success {
+    display: none;
+    margin-top: 15px;
+    background: #253020;
+    border: 1px solid #536c42;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+footer {
+    text-align: center;
+    background: #0b0d0b;
+    border-top: 1px solid #34362e;
+    padding: 35px 20px;
+}
+
+footer h2 {
+    color: var(--gold);
+    font: normal 27px Georgia, serif;
+}
+
+footer p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+@media(max-width: 950px) {
+    .food-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .order-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 650px) {
+    .nav {
+        flex-wrap: wrap;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filters input {
+        grid-column: 1 / -1;
+    }
+
+    .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .food-card img {
+        height: 135px;
+    }
+
+    .food-info {
+        padding: 10px;
+    }
+
+    .food-info h3 {
+        font-size: 17px;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+
+    .box {
+        padding: 16px;
+    }
+
+    .fields {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+}
+
+@media(max-width: 360px) {
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .food-card img {
+        height: 190px;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    header, .hero, #menu, footer, .no-print {
+        display: none !important;
+    }
+
+    section.content {
+        padding: 0;
+    }
+
+    .order-layout {
+        display: block;
+    }
+
+    .order-layout > .box:first-child {
+        display: none;
+    }
+
+    .box {
+        background: white;
+        border: none;
+        padding: 0;
+    }
+
+    .box h3 {
+        color: black;
+    }
+
+    .cart-item, .cart-item small, .total-row,
+    .total-row.grand, .total-row.grand strong {
+        color: black;
+        border-color: #ddd;
+    }
+
+    #printTitle {
+        display: block !important;
+    }
+}
+
+#printTitle {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="nav">
+        <div class="logo">MAX HAPPY</div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#menu">Menu</a>
+            <a href="#order">Billing & Order</a>
+        </nav>
+
+        <button class="primary" onclick="goToOrder()">
+            🛒 Cart <span id="navCount">0</span>
+        </button>
+    </div>
+</header>
+
+<main>
+
+<section class="hero" id="home">
+    <small>A JOURNEY THROUGH INDIAN FLAVOURS</small>
+
+    <h1>
+        Good Food.<br>
+        <span>Happy Moments.</span>
+    </h1>
+
+    <p>
+        From South Indian breakfast favourites to North Indian classics,
+        discover delicious regional flavours at Max Happy Restaurant.
+    </p>
+
+    <a href="#menu" class="primary"
+       style="display:inline-block;text-decoration:none">
+        Explore Our Menu ↓
+    </a>
+</section>
+
+<section class="content" id="menu">
+    <div class="heading">
+        <p style="color:var(--gold)">OUR SIGNATURE COLLECTION</p>
+        <h2>Discover the Menu</h2>
+        <p>Search dishes and filter by category, region or food type.</p>
+    </div>
+
+    <div class="filters">
+        <input id="search" type="search"
+               placeholder="🔎 Search food items...">
+
+        <select id="category">
+            <option value="All">All Categories</option>
+            <option>Breakfast</option>
+            <option>Lunch</option>
+            <option>Dinner</option>
+            <option>Snacks</option>
+            <option>Desserts</option>
+            <option>Drinks</option>
+        </select>
+
+        <select id="city">
+            <option value="All">All Regions</option>
+            <option>Karnataka</option>
+            <option>Tamil Nadu</option>
+            <option>Kerala</option>
+            <option>Hyderabad</option>
+            <option>Mumbai</option>
+            <option>Delhi</option>
+            <option>Kolkata</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+        </select>
+
+        <select id="diet">
+            <option value="All">Veg & Non-Veg</option>
+            <option value="Veg">Vegetarian</option>
+            <option value="Non-Veg">Non-Vegetarian</option>
+        </select>
+    </div>
+
+    <div class="count" id="count"></div>
+    <div class="food-grid" id="foodGrid"></div>
+</section>
+
+<section class="content" id="order">
+    <div class="heading">
+        <p style="color:var(--gold)">YOUR TABLE, YOUR CHOICE</p>
+        <h2>Billing & Place Order</h2>
+        <p>Add food, calculate your bill and print your receipt.</p>
+    </div>
+
+    <div class="order-layout">
+
+        <div class="box">
+            <h3>Your Bill</h3>
+            <div id="cart">
+                <p style="color:var(--muted)">
+                    Your cart is empty. Add dishes from the menu.
+                </p>
+            </div>
+
+            <div class="totals">
+                <div class="total-row">
+                    <span>Items</span>
+                    <span id="itemCount">0</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0.00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Tax / GST</span>
+                    <span id="taxLabel">5%</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Tax Amount</span>
+                    <span id="taxAmount">₹0.00</span>
+                </div>
+
+                <div class="total-row grand">
+                    <span>Total</span>
+                    <strong id="grandTotal">₹0.00</strong>
+                </div>
+            </div>
+
+            <p style="color:var(--muted);font-size:11px;margin-top:12px">
+                The tax rate is configurable for demonstration. Confirm the
+                correct tax treatment before issuing real customer bills.
+            </p>
+
+            <button class="secondary no-print"
+                    style="margin-top:15px"
+                    onclick="clearCart()">
+                Clear Cart
+            </button>
+        </div>
+
+        <div class="box">
+            <h3>Customer Details</h3>
+
+            <div class="fields">
+                <div class="field">
+                    <label for="customerName">Customer Name *</label>
+                    <input id="customerName" placeholder="Full name">
+                </div>
+
+                <div class="field">
+                    <label for="customerPhone">Phone Number *</label>
+                    <input id="customerPhone" type="tel"
+                           placeholder="Phone number">
+                </div>
+
+                <div class="field">
+                    <label for="orderType">Order Type</label>
+                    <select id="orderType">
+                        <option>Dine-in</option>
+                        <option>Takeaway</option>
+                        <option>Delivery</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="taxRate">Tax Rate</label>
+                    <select id="taxRate">
+                        <option value="0">0%</option>
+                        <option value="5" selected>5%</option>
+                        <option value="12">12%</option>
+                        <option value="18">18%</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="address">Address / Table Number</label>
+                    <input id="address"
+                           placeholder="Delivery address or table number">
+                </div>
+
+                <div class="field full">
+                    <label for="notes">Special Instructions</label>
+                    <textarea id="notes"
+                              placeholder="Additional instructions..."></textarea>
+                </div>
+            </div>
+
+            <div class="actions no-print">
+                <button class="primary" onclick="placeOrder()">
+                    Place Order
+                </button>
+
+                <button class="secondary" onclick="printBill()">
+                    Print / Save Bill as PDF
+                </button>
+
+                <button class="secondary" onclick="sendWhatsApp()">
+                    WhatsApp Order
+                </button>
+            </div>
+
+            <div class="success" id="success" role="status"></div>
+
+            <p style="color:var(--muted);font-size:11px;margin-top:12px">
+                This demo prepares orders locally. Actual order delivery
+                requires a configured WhatsApp number or connected backend.
+            </p>
+        </div>
+    </div>
+
+    <div id="printTitle">
+        <h1>MAX HAPPY RESTAURANT — BILL</h1>
+        <p id="printInfo"></p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <h2>MAX HAPPY RESTAURANT</h2>
+    <p>Good food brings people together.</p>
+    <p>Breakfast · Lunch · Dinner · Happy Moments</p>
+</footer>
+
+<script>
+// Add your restaurant WhatsApp number with country code.
+// Example: 919876543210
+const RESTAURANT_WHATSAPP = "";
+
+const foods = [
+    {id:1,name:"Masala Dosa",price:90,city:"Karnataka",category:"Breakfast",type:"Veg",desc:"Crispy dosa with spiced potato masala.",image:"https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=700&q=80"},
+    {id:2,name:"Bisi Bele Bath",price:130,city:"Karnataka",category:"Lunch",type:"Veg",desc:"Karnataka rice, lentil and vegetable speciality.",image:"https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80"},
+    {id:3,name:"Maddur Vada",price:55,city:"Karnataka",category:"Snacks",type:"Veg",desc:"Crunchy regional fritter with onion and spices.",image:"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80"},
+    {id:4,name:"Ragi Mudde Meal",price:160,city:"Karnataka",category:"Dinner",type:"Veg",desc:"Finger-millet balls served with curry.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+    {id:5,name:"Mangalorean Fish Curry",price:260,city:"Karnataka",category:"Lunch",type:"Non-Veg",desc:"Coastal fish curry with rice and spices.",image:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=700&q=80"},
+    {id:6,name:"Keerai Rasam",price:85,city:"Karnataka",category:"Lunch",type:"Veg",desc:"South Indian rasam with greens and spices.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+
+    {id:7,name:"Idli & Sambar",price:65,city:"Tamil Nadu",category:"Breakfast",type:"Veg",desc:"Steamed idlis with sambar and chutney.",image:"https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=700&q=80"},
+    {id:8,name:"Ven Pongal",price:85,city:"Tamil Nadu",category:"Breakfast",type:"Veg",desc:"Rice and lentils seasoned with pepper and cumin.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+    {id:9,name:"Chettinad Chicken",price:240,city:"Tamil Nadu",category:"Dinner",type:"Non-Veg",desc:"Chicken cooked with aromatic Chettinad spices.",image:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=700&q=80"},
+    {id:10,name:"Filter Coffee",price:45,city:"Tamil Nadu",category:"Drinks",type:"Veg",desc:"Fresh South Indian filter coffee.",image:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80"},
+
+    {id:11,name:"Kerala Appam",price:80,city:"Kerala",category:"Breakfast",type:"Veg",desc:"Lacy rice pancakes with soft centres.",image:"https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=700&q=80"},
+    {id:12,name:"Kerala Sadya",price:220,city:"Kerala",category:"Lunch",type:"Veg",desc:"Traditional vegetarian feast with regional sides.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+    {id:13,name:"Kerala Fish Fry",price:250,city:"Kerala",category:"Dinner",type:"Non-Veg",desc:"Fish marinated in regional spices and pan-fried.",image:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=700&q=80"},
+
+    {id:14,name:"Chicken Biryani",price:240,city:"Hyderabad",category:"Lunch",type:"Non-Veg",desc:"Fragrant basmati rice layered with spiced chicken.",image:"https://images.unsplash.com/photo-1563379091339-03246963d51a?auto=format&fit=crop&w=700&q=80"},
+    {id:15,name:"Veg Biryani",price:190,city:"Hyderabad",category:"Lunch",type:"Veg",desc:"Aromatic rice with vegetables and spices.",image:"https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=700&q=80"},
+    {id:16,name:"Haleem",price:210,city:"Hyderabad",category:"Dinner",type:"Non-Veg",desc:"Slow-cooked meat, grain and lentil speciality.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+
+    {id:17,name:"Vada Pav",price:45,city:"Mumbai",category:"Snacks",type:"Veg",desc:"Spiced potato fritter in a bun with chutneys.",image:"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80"},
+    {id:18,name:"Pav Bhaji",price:110,city:"Mumbai",category:"Snacks",type:"Veg",desc:"Buttery pav with rich mashed vegetable curry.",image:"https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=700&q=80"},
+    {id:19,name:"Bombay Sandwich",price:95,city:"Mumbai",category:"Snacks",type:"Veg",desc:"Vegetable sandwich with chutney and spices.",image:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=700&q=80"},
+
+    {id:20,name:"Chole Bhature",price:130,city:"Delhi",category:"Breakfast",type:"Veg",desc:"Fried bread served with chickpea curry.",image:"https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=700&q=80"},
+    {id:21,name:"Butter Chicken",price:270,city:"Delhi",category:"Dinner",type:"Non-Veg",desc:"Chicken in a creamy tomato-based sauce.",image:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=700&q=80"},
+    {id:22,name:"Paneer Tikka",price:180,city:"Delhi",category:"Snacks",type:"Veg",desc:"Marinated paneer grilled with peppers.",image:"https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=700&q=80"},
+
+    {id:23,name:"Kolkata Kathi Roll",price:120,city:"Kolkata",category:"Snacks",type:"Veg",desc:"Flaky roll filled with spiced vegetables.",image:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=700&q=80"},
+    {id:24,name:"Chicken Roll",price:150,city:"Kolkata",category:"Snacks",type:"Non-Veg",desc:"Flatbread roll with seasoned chicken.",image:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=700&q=80"},
+    {id:25,name:"Rasgulla",price:55,city:"Kolkata",category:"Desserts",type:"Veg",desc:"Soft chenna dumplings in sugar syrup.",image:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80"},
+
+    {id:26,name:"Amritsari Kulcha",price:140,city:"Punjab",category:"Lunch",type:"Veg",desc:"Stuffed flatbread with chickpea curry.",image:"https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=700&q=80"},
+    {id:27,name:"Dal Makhani",price:180,city:"Punjab",category:"Dinner",type:"Veg",desc:"Creamy black lentils with aromatic spices.",image:"https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80"},
+
+    {id:28,name:"Dal Baati Churma",price:210,city:"Rajasthan",category:"Lunch",type:"Veg",desc:"Baked baati with dal and sweet churma.",image:"https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"},
+    {id:29,name:"Ghewar",price:95,city:"Rajasthan",category:"Desserts",type:"Veg",desc:"Traditional honeycomb-textured Rajasthani dessert.",image:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80"},
+
+    {id:30,name:"Gulab Jamun",price:60,city:"Delhi",category:"Desserts",type:"Veg",desc:"Milk-solid dumplings in sugar syrup.",image:"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80"},
+    {id:31,name:"Mango Lassi",price:85,city:"Punjab",category:"Drinks",type:"Veg",desc:"Creamy yoghurt drink blended with mango.",image:"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=700&q=80"},
+    {id:32,name:"Fresh Lime Soda",price:55,city:"Mumbai",category:"Drinks",type:"Veg",desc:"Fresh lime with chilled soda.",image:"https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=700&q=80"}
+];
+
+const cart = {};
+
+function money(amount) {
+    return "₹" + amount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function safeText(text) {
+    return String(text).replace(/[&<>"']/g, c => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;",
+        '"':"&quot;", "'":"&#39;"
+    })[c]);
+}
+
+function renderMenu() {
+    const search = document.getElementById("search").value.toLowerCase().trim();
+    const category = document.getElementById("category").value;
+    const city = document.getElementById("city").value;
+    const diet = document.getElementById("diet").value;
+
+    const filtered = foods.filter(food =>
+        (category === "All" || food.category === category) &&
+        (city === "All" || food.city === city) &&
+        (diet === "All" || food.type === diet) &&
+        (food.name + " " + food.city + " " + food.desc)
+            .toLowerCase().includes(search)
+    );
+
+    document.getElementById("count").textContent =
+        `Showing ${filtered.length} of ${foods.length} dishes`;
+
+    document.getElementById("foodGrid").innerHTML = filtered.length
+        ? filtered.map(food => `
+            <article class="food-card">
+                <img
+                    src="${safeText(food.image)}"
+                    alt="${safeText(food.name)}"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='https://placehold.co/700x400/292b24/e9b44c?text=Food+Photo'">
+
+                <div class="food-info">
+                    <div class="food-city">
+                        ${safeText(food.city)} · ${safeText(food.type)}
+                    </div>
+
+                    <h3>${safeText(food.name)}</h3>
+                    <p class="description">${safeText(food.desc)}</p>
+
+                    <div class="food-bottom">
+                        <span class="price">${money(food.price)}</span>
+                        <button class="add-button"
+                                onclick="addToCart(${food.id})">
+                            + Add
+                        </button>
+                    </div>
+                </div>
+            </article>
+        `).join("")
+        : '<p style="grid-column:1/-1;text-align:center;color:#aaa">No dishes found. Try another filter.</p>';
+}
+
+["search", "category", "city", "diet"].forEach(id => {
+    document.getElementById(id).addEventListener(
+        id === "search" ? "input" : "change",
+        renderMenu
+    );
+});
+
+function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    renderCart();
+}
+
+function changeQuantity(id, amount) {
+    cart[id] = (cart[id] || 0) + amount;
+
+    if (cart[id] <= 0) {
+        delete cart[id];
+    }
+
+    renderCart();
+}
+
+function clearCart() {
+    Object.keys(cart).forEach(id => delete cart[id]);
+    renderCart();
+    document.getElementById("success").style.display = "none";
+}
+
+function getBill() {
+    const items = Object.entries(cart).map(([id, quantity]) => ({
+        food: foods.find(food => food.id === Number(id)),
+        quantity
+    })).filter(item => item.food && item.quantity > 0);
+
+    const count = items.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = items.reduce(
+        (sum, item) => sum + item.food.price * item.quantity, 0
+    );
+
+    const rate = Number(document.getElementById("taxRate").value);
+    const tax = Math.round(subtotal * rate) / 100;
+
+    return {
+        items,
+        count,
+        subtotal,
+        rate,
+        tax,
+        total: subtotal + tax
+    };
+}
+
+function renderCart() {
+    const bill = getBill();
+
+    document.getElementById("navCount").textContent = bill.count;
+    document.getElementById("itemCount").textContent = bill.count;
+    document.getElementById("subtotal").textContent = money(bill.subtotal);
+    document.getElementById("taxLabel").textContent = bill.rate + "%";
+    document.getElementById("taxAmount").textContent = money(bill.tax);
+    document.getElementById("grandTotal").textContent = money(bill.total);
+
+    document.getElementById("cart").innerHTML = bill.items.length
+        ? bill.items.map(item => `
+            <div class="cart-item">
+                <div>
+                    <strong>${safeText(item.food.name)}</strong>
+                    <small>
+                        ${money(item.food.price)} each ·
+                        Subtotal ${money(item.food.price * item.quantity)}
+                    </small>
+                </div>
+
+                <div class="quantity">
+                    <button onclick="changeQuantity(${item.food.id}, -1)">−</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="changeQuantity(${item.food.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join("")
+        : '<p style="color:#aaa">Your cart is empty. Add dishes from the menu.</p>';
+}
+
+document.getElementById("taxRate").addEventListener("change", renderCart);
+
+function getCustomerOrder() {
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const bill = getBill();
+
+    if (!name || !phone) {
+        alert("Please enter the customer name and phone number.");
+        return null;
+    }
+
+    if (!/^[+\d()\-\s]{7,18}$/.test(phone)) {
+        alert("Please enter a valid phone number.");
+        return null;
+    }
+
+    if (!bill.items.length) {
+        alert("Please add at least one food item.");
+        return null;
+    }
+
+    return {
+        ...bill,
+        name,
+        phone,
+        type: document.getElementById("orderType").value,
+        address: document.getElementById("address").value.trim(),
+        notes: document.getElementById("notes").value.trim(),
+        orderId: "MH" + Date.now().toString().slice(-8),
+        date: new Date().toLocaleString("en-IN")
+    };
+}
+
+function orderMessage(order) {
+    return [
+        "MAX HAPPY RESTAURANT — ORDER",
+        "Order ID: " + order.orderId,
+        "Date: " + order.date,
+        "Customer: " + order.name,
+        "Phone: " + order.phone,
+        "Order type: " + order.type,
+        "Address/Table: " + (order.address || "Not provided"),
+        "",
+        "ITEMS:",
+        ...order.items.map(item =>
+            `${item.food.name} x ${item.quantity} — ${
+                money(item.food.price * item.quantity)
+            }`
+        ),
+        "",
+        "Subtotal: " + money(order.subtotal),
+        `Tax (${order.rate}%): ${money(order.tax)}`,
+        "TOTAL: " + money(order.total),
+        "Instructions: " + (order.notes || "None")
+    ].join("\n");
+}
+
+function placeOrder() {
+    const order = getCustomerOrder();
+
+    if (!order) return;
+
+    document.getElementById("success").style.display = "block";
+    document.getElementById("success").textContent =
+        `Order ${order.orderId} has been prepared. Total: ${money(order.total)}. ` +
+        "This demo does not automatically send the order to restaurant staff. " +
+        "Use WhatsApp Order or connect a backend to receive orders.";
+    
+    document.getElementById("printInfo").textContent =
+        `Order ${order.orderId} | ${order.date} | Customer: ${order.name} | Phone: ${order.phone}`;
+}
+
+function printBill() {
+    const order = getCustomerOrder();
+
+    if (!order) return;
+
+    document.getElementById("printInfo").textContent =
+        `Order ${order.orderId} | ${order.date} | Customer: ${order.name} | Phone: ${order.phone} | Type: ${order.type}`;
+
+    window.print();
+}
+
+function sendWhatsApp() {
+    const order = getCustomerOrder();
+
+    if (!order) return;
+
+    if (!/^\d{10,15}$/.test(RESTAURANT_WHATSAPP)) {
+        alert(
+            "Configure RESTAURANT_WHATSAPP near the top of the JavaScript. " +
+            "Use your restaurant number with country code and digits only."
+        );
+        return;
+    }
+
+    window.open(
+        "https://wa.me/" + RESTAURANT_WHATSAPP +
+        "?text=" + encodeURIComponent(orderMessage(order)),
+        "_blank"
+    );
+}
+
+function goToOrder() {
+    document.getElementById("order").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+renderMenu();
+renderCart();
+</script>
+
+</body>
+</html>
